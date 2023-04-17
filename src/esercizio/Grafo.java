@@ -1,9 +1,6 @@
 package esercizio;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.PriorityQueue;
-import java.util.Vector;
+import java.util.*;
 
 public class Grafo {
 
@@ -38,6 +35,51 @@ public class Grafo {
         }
     }
 
+    public void bfs(int start) {
+
+        int v = grafo.size();
+        int[] dist = new int[v];
+        Queue<Integer> q = new LinkedList<Integer>();
+        int[] parent = new int[v];
+        boolean[] visited = new boolean[v];
+
+        for(int i = 0; i < v; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            parent[i] = -1;
+        }
+
+        visited[start] = true;
+        parent[start] = start;
+        dist[start] = 0;
+        q.add(start);
+
+        while(!q.isEmpty()) {
+
+            int top = q.poll();
+
+            for(Pair<Integer, Integer> neighbor : grafo.get(top)) {
+                int neighborNode = neighbor.getKey();
+
+                if(!visited[neighborNode]) {
+                    visited[neighborNode] = true;
+                    q.add(neighborNode);
+                    parent[neighborNode] = top;
+                    dist[neighborNode] = dist[top] + 1;
+                }
+            }
+        }
+
+        System.out.println("Node\\Distance\\Parent");
+        for(int i = 0; i < v; i++) {
+            if(dist[i] != Integer.MAX_VALUE)
+                System.out.println(i + "\t" + dist[i] + "\t" + parent[i]);
+        }
+
+
+
+
+
+    }
 
     public int[] dijkstra(int start) {
         int V = grafo.size();
@@ -98,7 +140,6 @@ public class Grafo {
                 mst.add(new Pair<>(u, v));
             }
         }
-
         return mst;
     }
 

@@ -17,17 +17,20 @@ public class Test {
         g.aggiungi_arco(2, 3, 7);
         g.aggiungi_arco(3, 3, 5);
 
-        // Print the original graph
+        // Printa il grafo originale
         System.out.println("Grafo originale:");
         g.stampaGrafo();
 
-        // Compute the MST using Kruskal's algorithm
+        // Esegue kruskal
+
         Vector<Pair<Integer, Integer>> mst = g.kruskal();
 
-        // Print the MST edges
+        // Stampa il MST
         System.out.println("\nMinimum Spanning Tree con Kruskal:");
         for (Pair<Integer, Integer> edge : mst) {
             System.out.println(edge.getKey() + " - " + edge.getValue());
         }
+
+        g.bfs(0);
     }
 }
