@@ -32,5 +32,6 @@ public class Test {
         }
 
         g.bfs(0);
+        g.dfs(0);
     }
 }
