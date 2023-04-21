@@ -6,10 +6,6 @@ public class Grafo {
 
     private final Vector<Vector<Pair<Integer, Integer>>> grafo;
 
-    public Grafo(Vector<Vector<Pair<Integer, Integer>>> g) {
-        this.grafo = g;
-    }
-
     public Grafo(int n) {
         this.grafo = new Vector<>();
 
