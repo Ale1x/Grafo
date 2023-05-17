@@ -1,6 +1,6 @@
-package esercizio;
+package esercizio.utils;
 
-class UnionFind {
+public class UnionFind {
     private int[] parent;
     private int[] rank;
 

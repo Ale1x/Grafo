@@ -1,37 +1,106 @@
 package esercizio;
 
-import java.util.Vector;
+import esercizio.algorithms.BellmanFord;
+import esercizio.algorithms.Dijkstra;
+import esercizio.algorithms.Kruskal;
+import esercizio.graph.DirectedGraph;
+import esercizio.graph.Edge;
+import esercizio.graph.Graph;
+
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Test {
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
+    private static ExecutorService executor;
 
-        Grafo g = new Grafo(7);
+    public static void main(String[] args) throws InterruptedException {
+        Graph graph = createGraph();
 
-        g.aggiungi_arco(0, 1, 5);
-        g.aggiungi_arco(0, 2, 2);
-        g.aggiungi_arco(1, 2, 3);
+        System.out.println("Graph:");
 
-        g.aggiungi_arco(2, 0, 1);
-        g.aggiungi_arco(2, 3, 7);
-        g.aggiungi_arco(3, 3, 5);
+        executor = Executors.newFixedThreadPool(3);
 
-        // Printa il grafo originale
-        System.out.println("Grafo originale:");
-        g.stampaGrafo();
+        processDijkstra(graph);
 
-        // Esegue kruskal
+        processBellmanFord(graph);
 
-        Vector<Pair<Integer, Integer>> mst = g.kruskal();
+        processKruskal(graph);
 
-        // Stampa il MST
-        System.out.println("\nMinimum Spanning Tree con Kruskal:");
-        for (Pair<Integer, Integer> edge : mst) {
-            System.out.println(edge.getKey() + " - " + edge.getValue());
+        executor.shutdown();
+    }
+
+    private static Graph createGraph() {
+        Graph graph = new DirectedGraph(5);
+
+        graph.addEdge(0, 1, 10);
+        graph.addEdge(1, 2, 20);
+        graph.addEdge(2, 3, 30);
+        graph.addEdge(3, 4, 40);
+        graph.addEdge(4, 0, 50);
+
+        return graph;
+    }
+
+    private static void processDijkstra(Graph graph) {
+        Future<int[]> dijkstraFuture = executor.submit(() -> {
+            Dijkstra dijkstra = new Dijkstra(graph);
+            return dijkstra.dijkstra(0);
+        });
+
+        try {
+            int[] shortestPaths = dijkstraFuture.get();
+            System.out.println("\nDijkstra's algorithm:");
+            for (int i = 0; i < shortestPaths.length; i++) {
+                System.out.println("Distance from 0 to " + i + ": " + shortestPaths[i]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
-        g.bfs(0);
-        g.dfs(0);
+    private static void processBellmanFord(Graph graph) {
+        Future<int[]> bellmanFordFuture = executor.submit(() -> {
+            BellmanFord bellmanFord = new BellmanFord(graph);
+            boolean result = bellmanFord.bellmanFord(0);
+            if (result) {
+                return bellmanFord.getDistances();
+            } else {
+                return null;
+            }
+        });
+
+        try {
+            int[] shortestPathsBF = bellmanFordFuture.get();
+            if (shortestPathsBF != null) {
+                System.out.println("\nBellman-Ford's algorithm:");
+                for (int i = 0; i < shortestPathsBF.length; i++) {
+                    System.out.println("Distance from 0 to " + i + ": " + shortestPathsBF[i]);
+                }
+            } else {
+                System.out.println("Bellman-Ford's algorithm detected a negative-weight cycle.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void processKruskal(Graph graph) {
+        Future<List<Edge>> kruskalFuture = executor.submit(() -> {
+            Kruskal kruskal = new Kruskal(graph);
+            return kruskal.kruskal();
+        });
+
+        try {
+            List<Edge> mst = kruskalFuture.get();
+            System.out.println("\nKruskal's algorithm:");
+            int edgeCount = 0;
+            for (Edge edge : mst) {
+                System.out.println("Edge " + edgeCount + ": " + edge.getDest() + " (weight: " + edge.getWeight() + ")");
+                edgeCount++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
