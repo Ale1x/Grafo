@@ -64,7 +64,4 @@ public class BellmanFord {
         return dist;
     }
 
-    public synchronized int[] getParents() {
-        return parent;
-    }
 }
