@@ -1,8 +1,6 @@
-# Simple Graph Class in Java
+# Simple Graph Class in Java (Adjacency List)
 
 ### Features
-- Class Pair
-- Class Triple
 - Implemented Djikstra
-- Implemented Kruskal with UnionFind
-- Graph Adjacency list print
+- Implemented Kruskal
+- Implemented Bellman-Ford
